@@ -25,6 +25,6 @@ kanap.then((response) => { //si ok promesse devient reponse//
         }
     })
 }).catch((err) => { //si requete impossible affichage message d'erreur en place de la liste de produit et message erreur console//
-    document.getElementById('items').innertext = 'Désolé un problème est survenu pendant le chargement de notre catalogue.veuillez réessayer ultérieurement'
+    document.getElementById('items').innerHTML = 'Désolé un problème est survenu pendant le chargement de notre catalogue.veuillez réessayer ultérieurement'
     console.log('Problème API');
 });
