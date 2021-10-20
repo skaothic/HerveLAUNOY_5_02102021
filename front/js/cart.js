@@ -42,6 +42,8 @@ function total_q() {
     let total_price = 0
     for (let q = 0; q < qty.length; q++) { total_price += qty[q] * pri[q] };
     document.getElementById('totalPrice').innerHTML = total_price
+    localStorage.setItem("panier", JSON.stringify(panier)) // sauvegarde du "panier" dans le localstorage
+
 }
 
 total_q()
@@ -50,10 +52,9 @@ for (let input of inputs) {
         if ((input.value < 0)) {
             alert("Veuillez saisir une quantité supérieur a zéro")
         } else {
-            total_q()
             let index = arr_inp.indexOf(input)
             panier[index]['quantity'] = parseInt(input.value)
-            localStorage.setItem("panier", JSON.stringify(panier)) // sauvegarde du "panier" dans le localstorage
+            total_q()
         }
     })
 }
@@ -63,23 +64,20 @@ for (let btn of delbtn) {
         let pdel = document.getElementsByClassName('cart__item')[index]
         pdel.remove()
         panier.splice(index, 1)
-        localStorage.setItem("panier", JSON.stringify(panier)) // sauvegarde du "panier" dans le localstorage
         total_q()
     })
 }
 
+document.getElementById('order').addEventListener('click', (event) => {
+    event.preventDefault()
+    let customer = {
+        firstName: document.getElementById('firstName').value,
+        lastname: document.getElementById('lastName').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        email: document.getElementById('email').value
+    }
 
-// let customer = {
-//     firstName: document.getElementById('firstname').value,
-//     lastname: document.getElementById('lastname').value,
-//     address: document.getElementById('address').value,
-//     city: document.getElementById('city').value,
-//     email: document.getElementById('email').value
-// }
-// document.getElementById('order').addEventListener('click', (event) => {
-//     event.preventDefault()
-
-//     console.log('commande');
-//     console.table(document.getElementsByTagName('input'))
-//     console.table(customer);
-// })
+    console.log('commande');
+    console.table(customer);
+})
