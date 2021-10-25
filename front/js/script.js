@@ -1,20 +1,18 @@
-//fonction affichage dynamique accueil//
+//affichage dynamique accueil
 
-//requete API -> promesse//
-const kanap = fetch("http://localhost:3000/api/products");
-kanap.then((response) => { //si ok promesse devient reponse//
-    var kanapprom = response.json();
-    kanapprom.then((kanaptabs) => { // reponse = tableau à boucler par index=k//
+const kanap = fetch("http://localhost:3000/api/products"); //requete API -> promesse[===>ligne 2]
+
+kanap.then((response) => {
+    let kanapprom = response.json();
+    kanapprom.then((kanaptabs) => { // reponse = tableau à boucler par index=k[===>ligne 3]
         for (let k = 0; k < kanaptabs.length; k++) {
-            //creation de variable avec les parametres propre au produit
-            let produit = new Object()
+            let produit = new Object() //creation de variable avec les parametres propre au produit[===>ligne 4]
             produit.id = kanaptabs[k]['_id']
             produit.imageUrl = kanaptabs[k]['imageUrl']
             produit.alttxt = kanaptabs[k]['altTxt']
             produit.name = kanaptabs[k]['name']
             produit.description = kanaptabs[k]['description']
-                //ajout du code HTML commenté en ressortant les variables précedentes
-            document.getElementById('items').innerHTML +=
+            document.getElementById('items').innerHTML += //ajout du code HTML commenté en ressortant les parametres des produits précedemment créés[===>ligne 5]
                 '<a href="./product.html?id=' + produit.id + '">' +
                 '<article>' +
                 '<img src="' + produit.imageUrl + '" alt="' + produit.alttxt + '">' +
@@ -24,7 +22,7 @@ kanap.then((response) => { //si ok promesse devient reponse//
                 '</a>'
         }
     })
-}).catch((err) => { //si requete impossible affichage message d'erreur en place de la liste de produit et message erreur console//
-    document.getElementById('items').innerHTML = 'Désolé un problème est survenu pendant le chargement de notre catalogue.veuillez réessayer ultérieurement'
+}).catch((err) => { //si requete impossible affichage message d'erreur en place de la liste de produit et message erreur console[===>ligne 2]
+    document.getElementById('items').innerHTML = 'Désolé un problème est survenu pendant le chargement de notre catalogue.Veuillez réessayer ultérieurement'
     console.log('Problème API');
 });
