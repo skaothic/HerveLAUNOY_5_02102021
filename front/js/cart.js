@@ -1,26 +1,26 @@
-let pageActive = window.location.href
+let pageActive = window.location.href // enregistrement URL active [===>ligne 20]
 
 function showToDOM(where, what) { // affichage des éléments sur la page
     document.getElementById(where).innerHTML = what
 }
 
-function getArrayFromDOM(id) {
+function getArrayFromDOM(id) { // recupération des collections HTML et changement en tableau JavaScript [===>ligne 24]
     let HTMLcoll = document.getElementsByClassName(id)
     let arr = Array.from(HTMLcoll)
     return arr
 }
-const getQuantity = (arr, n) => arr.map(x => x[n]);
-const reducer = (a, b) => a + b;
+const getQuantity = (arr, n) => arr.map(x => x[n]); // récuparation d'un champs spécifique d un tableau      [===>ligne 25]
+const reducer = (a, b) => a + b; //fonction d'addition des valeurs d'une colonne d un tableau
 
 function getValue(option) { // fonction de récupération des champs utilisateurs
     return document.getElementById(option).value
 }
 
 
-if ((/cart.html/).test(pageActive)) {
-    let panier = JSON.parse(localStorage.getItem('panier'))
-    for (let p = 0; p < panier.length; p++) {
-        document.getElementById('cart__items').innerHTML += '<article class="cart__item" data-id="{' + panier[p]['kanap_id'] + ' }">' +
+if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panier
+    let panier = JSON.parse(localStorage.getItem('panier')) // récupération du panier en tant que tableau    [===>ligne 21]
+    for (let p = 0; p < panier.length; p++) { // boucle sur le tableau précedent pour affiché autant d article que de ligne du tableau  [===>ligne 22]
+        document.getElementById('cart__items').innerHTML += '<article class="cart__item" data-id="{' + panier[p]['kanap_id'] + ' }">' + // [===>ligne 23]
             '<div class="cart__item__img">' +
             '<img src="' + panier[p]['img'] + '" alt="' + panier[p]['alt'] + ' ">' +
             '</div>' +
@@ -46,12 +46,12 @@ if ((/cart.html/).test(pageActive)) {
         localStorage.setItem("panier", JSON.stringify(arr))
     }
 
-    let ArrayDelete = getArrayFromDOM('deleteItem');
-    let ArrayInput = getArrayFromDOM('itemQuantity');
-    let ArrayPrice = getArrayFromDOM('price');
+    let ArrayDelete = getArrayFromDOM('deleteItem'); // creation d un tableau des boutons supprimer
+    let ArrayInput = getArrayFromDOM('itemQuantity'); // creation d un tableau des inputs quantité
+    let ArrayPrice = getArrayFromDOM('price'); // creation d un tableau des prix
 
 
-    function getTotal() {
+    function getTotal() { // fonction pour récuperer les quantités et les prix pour additionner et afficher le total [===>ligne 26]
         ArrayInput = getArrayFromDOM('itemQuantity')
         let quantity = getQuantity(ArrayInput, 'value')
         quantity = quantity.map(function(index) { return parseInt(index) })
@@ -68,7 +68,7 @@ if ((/cart.html/).test(pageActive)) {
     }
 
     getTotal()
-    for (let input of ArrayInput) {
+    for (let input of ArrayInput) { // ecoute des modif d input quantité + verif si saisie manuelle + MAJ panier et MAJ affichage totaux  [===>ligne 27]
         input.addEventListener('change', () => {
             let index = ArrayInput.indexOf(input)
             if (input.value < 0) {
@@ -80,7 +80,7 @@ if ((/cart.html/).test(pageActive)) {
             }
         })
     }
-    for (let btn of ArrayDelete) {
+    for (let btn of ArrayDelete) { // ecoute des clicks sur "supprimer" +suppression de la ligne cliquée+MAJ panier et MAJ affichage totaux  [===>ligne 28]
         btn.addEventListener("click", () => {
             let index = ArrayDelete.indexOf(btn)
             let productToDel = document.getElementsByClassName('cart__item')[index]
@@ -90,7 +90,7 @@ if ((/cart.html/).test(pageActive)) {
         })
     }
 
-    function inputCheck(input, id, text) {
+    function inputCheck(input, id, text) { //fonction de verification des saisie textuelle(Nom Prénom et Ville) avec message d'erreur (showToDOM)  [===>ligne 29]
         const checkingName = /[^a-zA-Z é è]/g
         let response = getValue(input)
         if (checkingName.test(response)) {
@@ -101,24 +101,26 @@ if ((/cart.html/).test(pageActive)) {
         return true
     }
 
-    function inputMailCheck() {
+    function inputMailCheck() { // fonction de verification de la saisie adresse mail avec message d'erreur (showToDOM)  [===>ligne 30]
         const checkingMail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         let email = getValue('email')
         if (checkingMail.test(email)) {
+
             showToDOM('emailErrorMsg', " ")
             return true
         }
         showToDOM('emailErrorMsg', "Veuillez vérifier la saisie de votre adresse Email")
+        return false
     }
 
-    let orderButton = document.getElementById('order')
+    let orderButton = document.getElementById('order') // selection du bouton commande
 
-    function confirmPage() {
+    function confirmPage() { //fonction de redirection vers la page confirmation et reset du panier car commande validée  [===>ligne 31]
         document.location.replace(href = "./confirmation.html")
         localStorage.removeItem('panier')
     }
 
-    orderButton.addEventListener('click', (event) => {
+    orderButton.addEventListener('click', (event) => { //ecoute du click sur bouton commande + verif (inputCheck et inputMailCheck) + creation objet contact et tableau (id de produit) commandé  [===>ligne 32]
         event.preventDefault()
         if (inputCheck('firstName', 'firstNameErrorMsg', 'prénom') && inputCheck('lastName', 'lastNameErrorMsg', 'nom') && inputCheck('city', 'cityErrorMsg', 'ville') && inputMailCheck()) {
             let contact = {
@@ -130,7 +132,7 @@ if ((/cart.html/).test(pageActive)) {
             }
             let products = Array.from(panier.map(x => x['kanap_id']))
             let orderSummary = { contact, products }
-            fetch("http://localhost:3000/api/products/order", {
+            fetch("http://localhost:3000/api/products/order", { //envoi de l oobjet contact et tableau id produit
                     method: "POST",
                     body: JSON.stringify(orderSummary),
                     headers: {
@@ -139,7 +141,7 @@ if ((/cart.html/).test(pageActive)) {
                     }
                 })
                 .then(response => response.json(order))
-                .then(json => localStorage.setItem("orderId", json['orderId']))
+                .then(json => localStorage.setItem("orderId", json['orderId'])) //recupération et sauvegarde local de l'orderId
                 .catch(() => {})
             confirmPage()
 
@@ -147,9 +149,9 @@ if ((/cart.html/).test(pageActive)) {
 
     })
 } else {
-    let orderId = localStorage.getItem('orderId')
-    document.getElementById('orderId').innerHTML = orderId
-    setTimeout(() => {
+    let orderId = localStorage.getItem('orderId') // recuperation de l orderId précedemment créé  [===>ligne 32]
+    showToDOM('orderId', orderId) // affichage de l orederId
+    setTimeout(() => { //suppresion de l orderId dans le localStorage  [===>ligne 33]
         localStorage.removeItem('orderId')
     }, 10000);
 
