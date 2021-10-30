@@ -105,7 +105,6 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
         const checkingMail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         let email = getValue('email')
         if (checkingMail.test(email)) {
-
             showToDOM('emailErrorMsg', " ")
             return true
         }
@@ -115,9 +114,8 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
 
     let orderButton = document.getElementById('order') // selection du bouton commande
 
-    function confirmPage() { //fonction de redirection vers la page confirmation et reset du panier car commande validée  [===>ligne 31]
+    function confirmPage() { //fonction de redirection vers la page confirmation  [===>ligne 31]
         document.location.replace(href = "./confirmation.html")
-        localStorage.removeItem('panier')
     }
 
     orderButton.addEventListener('click', (event) => { //ecoute du click sur bouton commande + verif (inputCheck et inputMailCheck) + creation objet contact et tableau (id de produit) commandé  [===>ligne 32]
@@ -132,7 +130,7 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
             }
             let products = Array.from(panier.map(x => x['kanap_id']))
             let orderSummary = { contact, products }
-            fetch("http://localhost:3000/api/products/order", { //envoi de l oobjet contact et tableau id produit
+            fetch("http://localhost:3000/api/products/order", { //envoi de l objet contact et tableau id produit
                     method: "POST",
                     body: JSON.stringify(orderSummary),
                     headers: {
@@ -143,17 +141,21 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
                 .then(response => response.json(order))
                 .then(json => localStorage.setItem("orderId", json['orderId'])) //recupération et sauvegarde local de l'orderId
                 .catch(() => {})
-            confirmPage()
-
+            setTimeout(() => {
+                confirmPage()
+            }, 3000)
         }
 
     })
 } else {
     let orderId = localStorage.getItem('orderId') // recuperation de l orderId précedemment créé  [===>ligne 32]
     showToDOM('orderId', orderId) // affichage de l orederId
-    setTimeout(() => { //suppresion de l orderId dans le localStorage  [===>ligne 33]
+    window.onbeforeunload = function() {
         localStorage.removeItem('orderId')
-    }, 10000);
+        localStorage.removeItem('panier')
+
+    }
+
 
 
 
