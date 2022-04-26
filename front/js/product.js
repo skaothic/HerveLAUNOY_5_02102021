@@ -19,7 +19,7 @@ function getValue(option) { // fonction de récupération des options/quantité 
     return document.getElementById(option).value
 }
 //requete API -> promesse//
-let kanap = fetch("http://localhost:3000/api/products");
+let kanap = fetch("../js/product.json");
 kanap.then((response) => { //si ok promesse devient reponse//
     let kanapprom = response.json();
     kanapprom.then((kanaptabs) => { // reponse = tableau à boucler pour récupérer les caracteristiques des canapé //

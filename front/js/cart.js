@@ -114,7 +114,7 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
 
     let orderButton = document.getElementById('order') // selection du bouton commande
 
-    function confirmPage() { //fonction de redirection vers la page confirmation  [===>ligne 31]
+    function confirmPage() { //fonction de redirection vers la page confirmation et reset du panier car commande validée  [===>ligne 31]
         document.location.replace(href = "./confirmation.html")
     }
 
@@ -143,20 +143,14 @@ if ((/cart.html/).test(pageActive)) { // verif si URL active correspond au panie
                 .catch(() => {})
             setTimeout(() => {
                 confirmPage()
-            }, 3000)
+            }, 2000)
         }
-
     })
 } else {
-    let orderId = localStorage.getItem('orderId') // recuperation de l orderId précedemment créé  [===>ligne 32]
-    showToDOM('orderId', orderId) // affichage de l orederId
+    let orderId = localStorage.getItem('orderId') //recuperation de l orderId précedemment créé  [===>ligne 32]    
+    showToDOM('orderId', orderId) // affichage de l orederId    
     window.onbeforeunload = function() {
         localStorage.removeItem('orderId')
         localStorage.removeItem('panier')
-
     }
-
-
-
-
 }

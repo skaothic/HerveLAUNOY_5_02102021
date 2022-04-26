@@ -1,6 +1,6 @@
 //affichage dynamique accueil
 
-const kanap = fetch("http://localhost:3000/api/products"); //requete API -> promesse[===>ligne 2]
+const kanap = fetch("../js/product.json"); //requete API -> promesse[===>ligne 2]
 
 kanap.then((response) => {
     let kanapprom = response.json();
@@ -23,6 +23,6 @@ kanap.then((response) => {
         }
     })
 }).catch((err) => { //si requete impossible affichage message d'erreur en place de la liste de produit et message erreur console[===>ligne 2]
-    document.getElementById('items').innerHTML = 'Désolé un problème est survenu pendant le chargement de notre catalogue.Veuillez réessayer ultérieurement'
+    document.getElementById('items').innerHTML = "Désolé un problème est survenu pendant le chargement de notre catalogue. Veuillez réessayer ultérieurement :'-("
     console.log('Problème API');
 });
